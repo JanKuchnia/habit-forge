@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitForge - Build Better Habits</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: var(--progress); }
+        }
+        
+        .progress-bar {
+            --progress: 0%;
+            animation: progress 1s ease-in-out forwards;
+        }
+        
+        .habit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-btn {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 640px) {
+            .habit-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-indigo-600 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-fire-alt text-2xl"></i>
+                    <span class="font-bold text-xl">HabitForge</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="hover:text-indigo-200 transition font-bold underline">Dashboard</a>
+                    <a href="habits.html" class="hover:text-indigo-200 transition">Habits</a>
+                    <a href="progress.html" class="hover:text-indigo-200 transition">Progress</a>
+                    <a href="ai-coach.html" class="hover:text-indigo-200 transition">AI Coach</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-bell text-xl cursor-pointer hover:text-indigo-200"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-indigo-400 flex items-center justify-center cursor-pointer">
+                        <span class="text-white font-medium">JS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="md:hidden bg-indigo-700 text-white px-4 py-2 flex justify-between">
+        <a href="index.html" class="block py-2 px-4 rounded hover:bg-indigo-600 font-bold underline">Dashboard</a>
+        <a href="habits.html" class="block py-2 px-4 rounded hover:bg-indigo-600">Habits</a>
+        <a href="progress.html" class="block py-2 px-4 rounded hover:bg-indigo-600">Progress</a>
+        <a href="ai-coach.html" class="block py-2 px-4 rounded hover:bg-indigo-600">AI Coach</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- User Profile & Stats -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div class="flex flex-col md:flex-row items-center md:items-start md:justify-between">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <div class="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <span class="text-indigo-600 text-2xl font-bold">JS</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold" id="profileName">John Smith</h2>
+                        <p class="text-gray-500" id="profileLevel">Level 5 Habit Builder</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
+                    <div class="text-center">
+                        <p class="text-gray-500">Current Streak</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="currentStreak">--</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-gray-500">Total XP</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="totalXP">--</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-gray-500">Habits</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="habitsCount">--</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level Progress -->
+            <div class="mt-6">
+                <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-700" id="levelProgressLabel">Level -- Progress</span>
+                    <span class="text-sm font-medium text-gray-700" id="levelProgressPercent">--%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="progress-bar bg-indigo-600 h-2.5 rounded-full" id="levelProgressBar" style="--progress: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Coach Section -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-md p-6 mb-8 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-robot mr-2"></i> AI Habit Coach
+                </h3>
+                <button class="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm font-medium hover:bg-indigo-100 transition">
+                    Ask Question
+                </button>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4">
+                <p class="font-medium">"Your morning routine is strong! Try adding a 5-minute meditation after your workout to boost focus throughout the day."</p>
+            </div>
+            <div class="flex space-x-2">
+                <button id="dashboardSuggestionBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded-full text-sm transition">
+                    <i class="fas fa-lightbulb mr-1"></i> Suggestion
+                </button>
+                <button id="dashboardProgressBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded-full text-sm transition">
+                    <i class="fas fa-chart-line mr-1"></i> Progress
+                </button>
+                <button id="dashboardMotivationBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded-full text-sm transition">
+                    <i class="fas fa-trophy mr-1"></i> Motivation
+                </button>
+            </div>
+        </div>
+
+        <!-- Habits Section -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Your Habits</h2>
+                <button id="addHabitBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center">
+                    <i class="fas fa-plus mr-2"></i> Add Habit
+                </button>
+            </div>
+            
+            <div class="habit-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="dashboardHabitsList">
+                <!-- Habits will be rendered here by app.js -->
+            </div>
+        </div>
+
+        <!-- Progress Charts -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Progress</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Weekly Completion -->
+                <div>
+                    <h3 class="font-bold text-lg mb-4 flex items-center">
+                        <i class="fas fa-calendar-week mr-2 text-indigo-600"></i> Weekly Completion
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-sm text-gray-600">Mon</span>
+                            <span class="text-sm text-gray-600">100%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-2 mt-4">
+                            <span class="text-sm text-gray-600">Tue</span>
+                            <span class="text-sm text-gray-600">80%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 80%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-2 mt-4">
+                            <span class="text-sm text-gray-600">Wed</span>
+                            <span class="text-sm text-gray-600">60%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 60%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-2 mt-4">
+                            <span class="text-sm text-gray-600">Thu</span>
+                            <span class="text-sm text-gray-600">40%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 40%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-2 mt-4">
+                            <span class="text-sm text-gray-600">Fri</span>
+                            <span class="text-sm text-gray-600">20%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habit Distribution -->
+                <div>
+                    <h3 class="font-bold text-lg mb-4 flex items-center">
+                        <i class="fas fa-chart-pie mr-2 text-indigo-600"></i> Habit Distribution
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-lg flex items-center justify-center">
+                        <div class="relative w-40 h-40">
+                            <div class="absolute inset-0 rounded-full border-8 border-indigo-500"></div>
+                            <div class="absolute inset-0 rounded-full border-8 border-green-500" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);"></div>
+                            <div class="absolute inset-0 rounded-full border-8 border-yellow-500" style="clip-path: polygon(50% 0, 100% 0, 100% 50%, 50% 50%);"></div>
+                            <div class="absolute inset-0 rounded-full border-8 border-purple-500" style="clip-path: polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%);"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold">5</p>
+                                    <p class="text-xs text-gray-600">Habits</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ml-8">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-indigo-500 rounded-full mr-2"></div>
+                                <span class="text-sm">Health (2)</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                <span class="text-sm">Learning (1)</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                                <span class="text-sm">Mindfulness (1)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                                <span class="text-sm">Productivity (1)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Habit Modal -->
+    <div id="addHabitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Add New Habit</h3>
+                    <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="habitForm">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="habitName">
+                            Habit Name
+                        </label>
+                        <input class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" id="habitName" type="text" placeholder="e.g. Morning Workout">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="habitFrequency">
+                            Frequency
+                        </label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" id="habitFrequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="habitTime">
+                            Preferred Time
+                        </label>
+                        <input class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" id="habitTime" type="time">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="habitCategory">
+                            Category
+                        </label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" id="habitCategory">
+                            <option value="health">Health</option>
+                            <option value="learning">Learning</option>
+                            <option value="mindfulness">Mindfulness</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="cancelHabitBtn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            Save Habit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button (Mobile) -->
+    <button id="mobileAddBtn" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg floating-btn z-40">
+        <i class="fas fa-plus text-xl"></i>
+    </button>
+
+    <!-- AI Coach Chat Modal (hidden by default) -->
+    <div id="dashboardAIChatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-indigo-700 flex items-center"><i class="fas fa-robot mr-2"></i>AI Habit Coach</h3>
+                    <button id="dashboardAIChatClose" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="dashboardAIChat" class="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto mb-4"></div>
+                <form id="dashboardAIChatForm" class="flex space-x-2">
+                    <input id="dashboardAIChatInput" type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ask a question...">
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
