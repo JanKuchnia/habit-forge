@@ -246,11 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setupModalListeners();
   if (document.getElementById('progressNoData')) {
     renderProgressPage();
-  } else {
-    renderWeeklyCompletionBars();
+  } else if (document.getElementById('progressBars')) {
+    renderDashboardProgress();
   }
   setupAIChat();
-  setupDashboardAIChat();
 });
 
 // --- Dashboard Progress Bars ---
@@ -555,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderWeeklyCompletionBars();
   }
   setupAIChat();
+  setupDashboardAIChat();
 });
 
 // Future: export/import, habits CRUD, progress, AI coach, etc. 
