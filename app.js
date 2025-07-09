@@ -532,7 +532,7 @@ function renderProgressPage() {
   const noData = document.getElementById('progressNoData');
   const charts = document.getElementById('progressCharts');
   if (!noData || !charts) return;
-  if (!habits.length || !habits.some(h => h.completedDates && h.completedDates.length)) {
+  if (!habits.length) {
     noData.classList.remove('hidden');
     charts.classList.add('hidden');
   } else {
@@ -617,7 +617,7 @@ window.renderProgressPage = function() {
   const noData = document.getElementById('progressNoData');
   const charts = document.getElementById('progressCharts');
   if (!noData || !charts) return;
-  if (!habits.length || !habits.some(h => h.completedDates && h.completedDates.length)) {
+  if (!habits.length) {
     noData.classList.remove('hidden');
     charts.classList.add('hidden');
   } else {
